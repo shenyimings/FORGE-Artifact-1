@@ -1,8 +1,33 @@
-# FORGE-Artifact
 
-This repository contains the artifacts for the paper "FORGE: An LLM-driven Framework for Large-Scale Smart Contract Vulnerability Dataset Construction."
+> [!IMPORTANT]
+> **This repository has been migrated to https://github.com/shenyimings/FORGE-Artifacts. Please visit there for our latest updates, as well as our newly released curated dataset FORGE-Curated at https://github.com/shenyimings/FORGE-Curated — featuring moderate size, higher quality, and enhanced feasibility.**
+
+
+
+---
+
+# FORGE: An LLM-driven Framework for Large-Scale Smart Contract Vulnerability Dataset Construction.
+
+[![Paper](https://img.shields.io/badge/Paper-arXiv-b31b1b)](http://arxiv.org/abs/2506.18795)
+![Visitors](https://visitor-badge.laobi.icu/badge?page_id=shenyimings.FORGE-Artifacts)
+![Python](https://img.shields.io/badge/Python-3.11+-blue)
+
+
+This repository contains the artifacts for the paper accepted at [ICSE'26](http://arxiv.org/abs/2506.18795)
 
 Specifically, it includes the [source code](src/) of the FORGE framework, the [dataset](dataset/) constructed by FORGE, and the [evaluation results](evaluation/).
+
+
+## News
+
+- **[2026-02-11] 🔥 We have released [FORGE-Curated](https://github.com/shenyimings/FORGE-Curated): A curated smart contract vulnerability dataset with moderate size, higher quality, and enhanced feasibility!**
+- **[2025-06-20] 🎉 Our [paper](http://arxiv.org/abs/2506.18795) has been directly accepted by ICSE'26 Round 1 (Direct Acceptance Rate: 9.2%, 60/646). Can't wait to see you in Rio de Janeiro!**
+- **[2025-03-12] ✨ We have released the largest smart contract vulnerability dataset FORGE-Dataset, together with the source code of FORGE, the first automated vulnerability dataset construction framework.**
+
+> [!NOTE]  
+> Following our commitment to responsible maintenance outlined in the paper, we have collected new high-quality audit reports released between December 2024 and February 2026 based on feedback and suggestions from early adopters. With manual verification, we have created **[FORGE-Curated](https://github.com/shenyimings/FORGE-Curated)**, a curated moderate-scale EVM smart contract vulnerability dataset that is particularly suitable for tasks such as **LLM benchmark evaluation**. We strongly recommend users with similar needs to consider using the FORGE-Curated.
+
+
 
 ## FORGE Framework
 
@@ -12,7 +37,7 @@ Specifically, it includes the [source code](src/) of the FORGE framework, the [d
   <img src="assets/framework.png" alt="FORGE banner" width="1000"/>
 </p>
 
-FORGE is an automated framework that constructs comprehensive smart contract vulnerability datasets from real-world audit reports. By leveraging large language models (LLMs) and the Common Weakness Enumeration (CWE) standard, FORGE addresses key challenges in existing vulnerability datasets: labor-intensive and error-prone of manual construction, inconsistent classification standards, and limited scalability. The FORGE framework consists of four main modules:
+FORGE is an automated framework that constructs comprehensive smart contract vulnerability datasets from real-world audit reports. By leveraging large language models (LLMs) and the Common Weakness Enumeration (CWE) standard, FORGE addresses key challenges in existing vulnerability datasets: labor-intensive, error-prone manual construction; inconsistent classification standards; and limited scalability. The FORGE framework consists of four main modules:
 
 - **Semantic Chunker**: Segments audit reports into meaningful, self-contained chunks
 - **MapReduce Extractor**: Extracts and aggregates vulnerability information from report chunks
@@ -22,13 +47,15 @@ FORGE is an automated framework that constructs comprehensive smart contract vul
 
 ### Installation and Setup
 
+We recommend using the [uv package manager](https://docs.astral.sh/uv/) for installing and configuring FORGE:
+
 ```bash
 # Clone the repository
 git clone https://github.com/FOGRE-security/FORGE-Artifact.git
 cd FORGE-Artifact/src
 
-# Install dependencies
-pip install -r requirements.txt
+# Install dependencies with uv
+uv sync
 
 # Configure model settings
 vim config.yaml  # Configure LLM and provider API Baseurl
@@ -38,11 +65,22 @@ cp .env-example .env
 vim .env  # Configure API-key
 ```
 
-### Quick Start
-
-Run the FORGE to extract, classify and fetch source code on a sample document:
+Alternatively, you can use pip:
 
 ```bash
+# Install dependencies with pip
+pip install -r requirements.txt
+```
+
+### Quick Start
+
+Run the FORGE to extract, classify, and fetch source code on a sample document:
+
+```bash
+# Using uv (recommended)
+uv run main.py forge -t sample/sample.pdf -o sample
+
+# Or using python directly
 python main.py forge -t sample/sample.pdf -o sample
 ```
 
@@ -63,14 +101,21 @@ FORGE offers several commands to run different parts of the pipeline:
 
 ```bash
 # Extract vulnerability and project metadata from security documents:
-python main.py extract -t path/to/documents -o output/directory
+uv run main.py extract -t path/to/documents -o output/directory
+# Or: python main.py extract -t path/to/documents -o output/directory
 
 # Classify extracted vulnerabilities into CWE categories:
-python main.py classify -t path/to/extracted/json
+uv run main.py classify -t path/to/extracted/json
+# Or: python main.py classify -t path/to/extracted/json
 
 # Fetch source code based on project metadata from *Github*, *Etherscan*, *Bscscan*, *Polygonscan* and *Basescan*.
-python main.py fetch -t path/to/project/json
+uv run main.py fetch -t path/to/project/json
+# Or: python main.py fetch -t path/to/project/json
 ```
+
+#### Benchmark Construction
+
+A potential use case for FORGE is to construct small-scale benchmark datasets for specific vulnerabilities from security artifacts by editing the prompts in [src/core/invoker.py](src/core/invoker.py).
 
 #### Additional Options
 
@@ -88,8 +133,9 @@ We have made our dataset available in the following ways:
 
 - **Vulnerability Information**: Available in the `dataset/results` directory of this repository.
 - **Solidity Code Files**: Available in the `dataset/contracts` directory of this repository.
-- **Original Audit Reports**: Due to GitHub storage limitations, these are hosted on an anonymous Cloudflare R2 storage. You can download them through the `dataset/access_reports.ipynb` notebook.
-
+- **Audit Reports**: Due to GitHub storage limitations, audit reports are available through two download options:
+  - **Option 1 - Cloudflare R2:** Download via API tokens using any method you prefer. See [dataset/access_reports.ipynb](dataset/access_reports.ipynb) for a usage example.
+  - **Option 2 - Google Drive:** Direct download from [https://drive.google.com/file/d/10u9DrWvtzw8Bo-7jig2KWmua2bS8NPq9](https://drive.google.com/file/d/10u9DrWvtzw8Bo-7jig2KWmua2bS8NPq9).
 
 ---
 
@@ -121,6 +167,8 @@ The dataset contains 81,390 Solidity files and 27,497 vulnerabilities across 296
 
 You can use `RQ1/statistic.ipynb` to analyze and summarize the relevant data within our dataset.
 
+> NOTE: This dataset is dynamically maintained through a community-driven issue system and may differ from the current records.
+
 
 ### RQ2
 
@@ -138,10 +186,22 @@ The CWE classification results for vulnerability classifications by authors acro
 
 ---
 
+## References
+
+For more information about the dataset and research findings, please refer to our paper accepted by **ICSE 2026**: 
+
+```bibtex
+@misc{chen2025forgellmdrivenframeworklargescale,
+      title={FORGE: An LLM-driven Framework for Large-Scale Smart Contract Vulnerability Dataset Construction}, 
+      author={Jiachi Chen and Yiming Shen and Jiashuo Zhang and Zihao Li and John Grundy and Zhenzhe Shao and Yanlin Wang and Jiashui Wang and Ting Chen and Zibin Zheng},
+      year={2025},
+      eprint={2506.18795},
+      archivePrefix={arXiv},
+      primaryClass={cs.CR},
+      url={https://arxiv.org/abs/2506.18795}, 
+}
+```
 
 ## Contributing
 
-If you find any issues with the dataset, please submit an issue to describe the problem. We will respond promptly and work to resolve it. You can also contribute to improving our code by creating a new pull request.
-
-
-For more information about the dataset and research findings, please refer to our paper: "FORGE: An LLM-driven Framework for Large-Scale Smart Contract Vulnerability Dataset Construction."
+If you find any issues with the dataset or have questions, please contact [shenym7@mail2.sysu.edu.cn](mailto:shenym7@mail2.sysu.edu.cn) or submit an issue to describe the problem. We will respond promptly and work to resolve it. You can also contribute to improving our code by creating a new pull request.
